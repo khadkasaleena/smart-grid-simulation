@@ -1,7 +1,0 @@
-scenario,description,failures,recoveries,unrecovered,cascade_events,mttr_h,peak_load_pct,crew_utilisation,exec_ms
-Baseline,"Normal demand, single repair crew",12,12,0,0,4.25,106.7,0.535,3.33
-High Demand,Demand +25% (e.g. heatwave / load growth),15,15,0,38,6.24,361.9,0.617,3.62
-Aged Infrastructure,Failure probability tripled (ageing assets),28,23,5,29,11.1,453.9,0.993,4.03
-High Renewable,"Solar capacity factor boosted, demand normal",12,12,0,0,4.25,106.7,0.535,2.96
-Extra Repair Crews,Three repair crews instead of one,16,16,0,15,3.04,160.3,0.222,4.08
-Stress Test,High demand AND aged infrastructure together,28,23,5,41,12.29,556.9,0.99,3.16
