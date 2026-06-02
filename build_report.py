@@ -68,6 +68,27 @@ def add_toc(document):
     run._r.append(fldChar4)
 
 
+def add_static_toc(document, entries):
+    """Render a static, page-numbered table of contents.
+
+    `entries` is a list of (text, level, page_number). Used for the PDF export,
+    where Word's live TOC field cannot be auto-updated headlessly.
+    """
+    for text, level, page in entries:
+        p = document.add_paragraph()
+        p.paragraph_format.space_after = Pt(2)
+        indent = 0.0 if level == 1 else 0.3
+        p.paragraph_format.left_indent = Inches(indent)
+        # Right-aligned tab stop with dot leader for the page number.
+        tab_stops = p.paragraph_format.tab_stops
+        from docx.enum.text import WD_TAB_ALIGNMENT, WD_TAB_LEADER
+        tab_stops.add_tab_stop(Inches(6.0), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.DOTS)
+        run = p.add_run(text + "\t" + str(page))
+        run.font.size = Pt(11)
+        if level == 1:
+            run.bold = True
+
+
 def body(document, text):
     p = document.add_paragraph(text)
     p.paragraph_format.space_after = Pt(8)
@@ -112,7 +133,7 @@ def code_appendix(document, filename):
 # --------------------------------------------------------------------------- #
 
 
-def main():
+def main(static_toc=None, out_name="StudentID_Salina_Khadka_Assignment.docx"):
     doc = Document()
 
     # Base style
@@ -160,7 +181,10 @@ def main():
 
     # ---- Table of contents -----------------------------------------------
     h = doc.add_heading("Table of Contents", level=1)
-    add_toc(doc)
+    if static_toc:
+        add_static_toc(doc, static_toc)
+    else:
+        add_toc(doc)
     doc.add_page_break()
 
     # Page numbers in footer (from here on, applied to whole doc).
@@ -279,9 +303,10 @@ def main():
                   "visualization.py", "make_system_diagram.py", "run_simulation.py"]:
         code_appendix(doc, fname)
 
-    out = os.path.join(HERE, "StudentID_Salina_Khadka_Assignment.docx")
+    out = os.path.join(HERE, out_name)
     doc.save(out)
     print("Saved:", out)
+    return out
 
 
 # --------------------------------------------------------------------------- #
